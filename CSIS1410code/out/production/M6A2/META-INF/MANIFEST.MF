@@ -1,3 +1,0 @@
-Manifest-Version: 1.0
-Main-Class: M6A2.LinkedStack
-
