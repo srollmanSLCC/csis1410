@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="midterm2">
+    <output-path>$PROJECT_DIR$/out/artifacts/midterm2</output-path>
+    <root id="archive" name="midterm2.jar">
+      <element id="module-output" name="midterm2" />
+      <element id="directory" name="src">
+        <element id="dir-copy" path="$PROJECT_DIR$/midterm2/src/midterm2" />
+      </element>
+    </root>
+  </artifact>
+</component>

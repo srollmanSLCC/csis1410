@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="PigLatin">
+    <output-path>$PROJECT_DIR$/out/artifacts/PigLatin</output-path>
+    <root id="archive" name="PigLatin.jar">
+      <element id="module-output" name="PigLatin" />
+      <element id="directory" name="src">
+        <element id="dir-copy" path="$PROJECT_DIR$/PigLatin/src/PigLatin" />
+      </element>
+    </root>
+  </artifact>
+</component>

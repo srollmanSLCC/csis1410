@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="TotalBeginner">
+    <output-path>$PROJECT_DIR$/out/artifacts/TotalBeginner</output-path>
+    <root id="archive" name="TotalBeginner.jar">
+      <element id="module-output" name="TotalBeginner" />
+      <element id="directory" name="src">
+        <element id="dir-copy" path="$PROJECT_DIR$/TotalBeginner/src/org/totalbeginner/tutorial" />
+      </element>
+    </root>
+  </artifact>
+</component>

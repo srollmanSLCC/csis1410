@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="ArrayAccess">
+    <output-path>$PROJECT_DIR$/out/artifacts/ArrayAccess</output-path>
+    <root id="archive" name="ArrayAccess.jar">
+      <element id="module-output" name="ArrayAccess" />
+      <element id="directory" name="src">
+        <element id="dir-copy" path="$PROJECT_DIR$/ArrayAccess/src/ArrayAccess" />
+      </element>
+    </root>
+  </artifact>
+</component>
