@@ -1,8 +1,22 @@
+/********************************************************
+ *
+ *  Project :  M5A2
+ *  File    :  App.java
+ *  Name    :  Steven Rollman
+ *
+ *  Description : Runs an application that will take a name, address, and phone
+ *                and validate it against a regular expression.
+ *
+ ********************************************************/
+
 package M5A2;
 
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Class App
+ */
 public class App
 {
     // Declare RegExes.
@@ -16,6 +30,10 @@ public class App
     private JLabel lblName, lblAddress, lblPhone;
     private JButton btnValidate;
 
+    /**
+     * Main method for program.
+     * @param args
+     */
     public static void main(String[] args)
     {
         EventQueue.invokeLater(() ->
@@ -40,6 +58,9 @@ public class App
         initialize();
     }
 
+    /**
+     * Initializes all fields and components including the frame.
+     */
     private void initialize()
     {
         // initialize our variables

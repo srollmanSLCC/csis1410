@@ -222,7 +222,7 @@ public class Tutor
 
                 case ADD_PROBLEM:
                     currentStudent.addProblem(Problem.problemTypes.ADDITION);
-                    updateStatus(statuses.DEFAULT);
+                    updateStatus(statuses.SHOW_PROBLEMS);
                     updateFields(cmb.getSelectedIndex());
                     return;
 
@@ -253,7 +253,7 @@ public class Tutor
 
                 case ADD_PROBLEM:
                     currentStudent.addProblem(Problem.problemTypes.SUBTRACTION);
-                    updateStatus(statuses.DEFAULT);
+                    updateStatus(statuses.SHOW_PROBLEMS);
                     updateFields(cmb.getSelectedIndex());
                     return;
 
@@ -291,7 +291,7 @@ public class Tutor
 
                 case ADD_PROBLEM:
                     currentStudent.addProblem(Problem.problemTypes.MULTIPLICATION);
-                    updateStatus(statuses.DEFAULT);
+                    updateStatus(statuses.SHOW_PROBLEMS);
                     updateFields(cmb.getSelectedIndex());
                     return;
 
@@ -311,7 +311,7 @@ public class Tutor
 
                 case ADD_PROBLEM:
                     currentStudent.addProblem(Problem.problemTypes.DIVISION);
-                    updateStatus(statuses.DEFAULT);
+                    updateStatus(statuses.SHOW_PROBLEMS);
                     updateFields(cmb.getSelectedIndex());
                     return;
 
@@ -352,6 +352,10 @@ public class Tutor
 
     private void updateProblem()
     {
+        if (currentProblem == null)
+        {
+            return;
+        }
         String[] words = currentProblem.toString().split(" ");
         if (currentProblem.isSolved())
         {
@@ -479,8 +483,8 @@ public class Tutor
         cmbProblems.setVisible(true);
         lblName.setVisible(false);
         txtName.setVisible(false);
-        lblProblem.setVisible(true);
-        txtSolution.setVisible(true);
+        lblProblem.setVisible(false);
+        txtSolution.setVisible(false);
         migrateButtons(buttonPositions.DEFAULT);
     }
 
@@ -501,6 +505,27 @@ public class Tutor
         txtName.setVisible(true);
         lblProblem.setVisible(false);
         txtSolution.setVisible(false);
+        migrateButtons(buttonPositions.DEFAULT);
+    }
+
+    private void renderProblemLayout()
+    {
+        btnOne.setEnabled(true);
+        btnTwo.setEnabled(true);
+        btnThree.setEnabled(true);
+        btnFour.setEnabled(true);
+        btnFive.setEnabled(true);
+        btnFive.setVisible(true);
+        btnOne.setText("New");
+        btnTwo.setText("Add");
+        btnThree.setText("Update");
+        btnFour.setText("Delete");
+        lblProblems.setVisible(true);
+        cmbProblems.setVisible(true);
+        lblName.setVisible(false);
+        txtName.setVisible(false);
+        lblProblem.setVisible(true);
+        txtSolution.setVisible(true);
         migrateButtons(buttonPositions.DEFAULT);
     }
 
@@ -619,6 +644,9 @@ public class Tutor
             return;
         }
         txtName.setText(currentStudent.getName());
+
+        // We don't want to remove all items if we are adding new problems to a current student.
+        // That would be very heavy.
         cmbProblems.removeAllItems();
 
         if (currentStudent.hasProblems())
@@ -646,6 +674,8 @@ public class Tutor
                 renderEditLayout();
                 break;
             case SHOW_PROBLEMS:
+                renderProblemLayout();
+                break;
             case DEFAULT:
             default:
                 renderDefaultLayout();
