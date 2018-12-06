@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="tutor">
+    <output-path>$PROJECT_DIR$/out/artifacts/tutor</output-path>
+    <root id="archive" name="tutor.jar">
+      <element id="module-output" name="tutor" />
+      <element id="directory" name="src">
+        <element id="dir-copy" path="$PROJECT_DIR$/tutor/src/problem" />
+      </element>
+    </root>
+  </artifact>
+</component>
