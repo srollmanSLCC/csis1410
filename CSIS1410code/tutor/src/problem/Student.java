@@ -3,6 +3,9 @@ package problem;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * Public class Student
+ */
 public class Student implements Serializable
 {
 
@@ -10,18 +13,30 @@ public class Student implements Serializable
     private ArrayList<Problem> problems;
     private int mostRecentProblemIndex;
 
+    /**
+     * Default constructor.
+     */
     public Student()
     {
         this.name = null;
         this.problems = new ArrayList<>();
     }
 
+    /**
+     * Constructor with name argument.
+     * @param name the name of the student
+     */
     public Student(String name)
     {
         this.name = name;
         this.problems = new ArrayList<>();
     }
 
+    /**
+     * Constructor with name and problems argument
+     * @param name the name of the student.
+     * @param problems a collection of problems.
+     */
     public Student (String name, Iterable<Problem> problems)
     {
         this.name = name;
@@ -32,6 +47,10 @@ public class Student implements Serializable
         }
     }
 
+    /**
+     * Add a problem to the collection.
+     * @param type
+     */
     public void addProblem(Problem.problemTypes type)
     {
         Problem p = createProblem(type);
