@@ -10,6 +10,7 @@ public class Multiplication extends Problem
         this.firstNum = r.nextInt(20);
         this.secondNum = r.nextInt(20);
         this.solution = firstNum * secondNum;
+        this.answer = -10000;
     }
 
     @Override

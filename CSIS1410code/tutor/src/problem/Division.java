@@ -11,6 +11,7 @@ public class Division extends Problem
         this.secondNum = r.nextInt(9) + 1;
         this.firstNum = this.secondNum * r.nextInt(20);
         this.solution = firstNum / secondNum;
+        this.answer = -10000;
     }
 
     @Override

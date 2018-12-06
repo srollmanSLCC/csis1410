@@ -10,6 +10,7 @@ public class Addition extends Problem
         this.firstNum = r.nextInt(99);
         this.secondNum = r.nextInt(99);
         this.solution = firstNum + secondNum;
+        this.answer = -100000;
     }
 
     @Override
