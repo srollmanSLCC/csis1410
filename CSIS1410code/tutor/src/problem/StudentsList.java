@@ -20,7 +20,7 @@ public class StudentsList
         students = new ArrayList<>();
     }
 
-    public static boolean readContactFile(String fileName)
+    public static boolean readStudentFile(String fileName)
     {
         boolean success = false;
         students = new ArrayList<>();

@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.nio.file.Path;
 
@@ -11,7 +12,7 @@ public class Tutor
 {
     public enum statuses
     {
-        DEFAULT, ADD_NEW, EDIT, SHOW_PROBLEMS, ADD_PROBLEM
+        ADD_NEW, ADD_PROBLEM, CHANGING_STUDENT, DEFAULT, EDIT, SHOW_PROBLEMS
     }
 
     public enum buttonPositions
@@ -20,10 +21,12 @@ public class Tutor
     }
 
     private final String nameRegex = "^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$";
+    private final String solutionRegex = "^-?[0-9]+$";
 
     private Student currentStudent;
-    public Problem currentProblem;
+    private Problem currentProblem;
     private statuses currentStatus = statuses.ADD_NEW;
+    private statuses mostRecentStatus;
 
     public static JFrame frame;
     private JComboBox<String> cmb;
@@ -40,9 +43,7 @@ public class Tutor
     private JButton btnThree;
     private JButton btnFour;
     private JButton btnFive;
-    private boolean gotoNextField;
-    private String value;
-    private boolean isShowingProblems = false;
+    private JButton btnSolve;
     private String storageFileName;
     private boolean isFileSaved;
 
@@ -68,16 +69,57 @@ public class Tutor
     public Tutor()
     {
         initialize();
-        if (StudentsList.readContactFile(storageFileName))
+        if (StudentsList.readStudentFile(storageFileName))
         {
             loadStudents();
-            updateStatus(statuses.DEFAULT);
+            if (currentStudent != null && currentProblem != null)
+            {
+                updateStatus(statuses.SHOW_PROBLEMS);
+            }
+            else
+            {
+                updateStatus(statuses.DEFAULT);
+            }
             isFileSaved = true;
         }
         else
         {
             updateStatus(statuses.ADD_NEW);
         }
+    }
+
+    private void addComponents()
+    {
+        // Add our components to our main frame.
+        frame.getContentPane().add(lblTutoring);
+        frame.getContentPane().add(lblStudents);
+        frame.getContentPane().add(cmb);
+        frame.getContentPane().add(lblProblems);
+        frame.getContentPane().add(cmbProblems);
+        frame.getContentPane().add(lblName);
+        frame.getContentPane().add(txtName);
+        frame.getContentPane().add(lblProblem);
+        frame.getContentPane().add(txtSolution);
+        frame.getContentPane().add(btnOne);
+        frame.getContentPane().add(btnTwo);
+        frame.getContentPane().add(btnThree);
+        frame.getContentPane().add(btnFour);
+        frame.getContentPane().add(btnFive);
+        frame.getContentPane().add(btnSolve);
+    }
+
+    private void addProblem(Problem.problemTypes type)
+    {
+        // First we want to add the problem to our list.
+        currentStudent.addProblem(type);
+        // We know that our current problem is now at index 0 because that's where all new problems go.
+        currentProblem = currentStudent.getProblems().get(0);
+        // update our fields and update our combobox.
+        updateFields(cmb.getSelectedIndex());
+        // update the main status of our app.
+        updateStatus(statuses.SHOW_PROBLEMS);
+        // render the problem now that our environment is prepared.
+        updateProblem();
     }
 
     private void addStudent(String name) throws InvalidStudentNameException
@@ -98,111 +140,48 @@ public class Tutor
         cmb.removeAllItems();
     }
 
-    /**
-     * Initialize the values for our app.
-     */
-    private void initialize()
+    private void allowSubmitAnswer(boolean shouldAllow)
     {
-        // Initialize variables.
-        isFileSaved = false;
-        storageFileName = "students.ser";
-        frame = new JFrame();
-        cmb = new JComboBox<>();
-        cmbProblems = new JComboBox<>();
-        txtName = new JTextField();
-        txtSolution = new JTextField();
-        btnOne = new JButton("New");
-        btnTwo = new JButton("Add");
-        btnThree = new JButton("Update");
-        btnFour = new JButton("Delete");
-        btnFive = new JButton("New Problem");
+        btnSolve.setEnabled(shouldAllow);
+    }
 
-        // Set up the main frame, use dimensions of example for simplicity.
-        frame.setBounds(650, 450, 640, 360);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().setLayout(null);
-        frame.setResizable(false);
-
-        // Create labels for our components and set their positions.
-        lblTutoring = new JLabel("Elementary Tutoring");
-        lblTutoring.setBounds(10, 11, 150, 20);
-        lblTutoring.setHorizontalAlignment(SwingConstants.LEFT);
-
-        lblStudents = new JLabel("Student");
-        lblStudents.setBounds(180, 13, 45, 14);
-
-        // Set up students combo box
-        cmb.setModel(new DefaultComboBoxModel<>());
-        cmb.setBounds(230, 11, 132, 20);
-        cmb.setMaximumRowCount(4);
-
-        // Problems combobox and student name entry will go in the same place.
-        lblProblems = new JLabel("Problems");
-        lblProblems.setBounds(390, 13, 60, 14);
-        lblName = new JLabel("Name");
-        lblName.setBounds(400, 13, 64, 14);
-
-        // Set up text fields.
-        txtName.setBounds(450, 11, 150, 20);
-        txtName.setColumns(10);
-        txtSolution.setBounds(315, 80, 40,20);
-        txtSolution.setColumns(10);
-
-        // Set up problems combo box
-        cmbProblems.setModel(new DefaultComboBoxModel<>());
-        cmbProblems.setBounds(450, 11, 150, 20);
-        cmbProblems.setMaximumRowCount(4);
-
-        lblProblem = new JLabel();
-        lblProblem.setBounds(10, 82, 300, 20);
-
-        int buttonLineY = 40;
-        int buttonWidth = 89;
-        int buttonHeight = 23;
-
-        // Set up our buttons
-        btnOne.setEnabled(false);
-        btnTwo.setEnabled(false);
-        btnThree.setEnabled(false);
-        btnFour.setEnabled(false);
-        btnFive.setEnabled(false);
-        btnOne.setBounds(15, buttonLineY, buttonWidth, buttonHeight);
-        btnTwo.setBounds(119, buttonLineY, buttonWidth, buttonHeight);
-        btnThree.setBounds(223, buttonLineY, buttonWidth, buttonHeight);
-        btnFour.setBounds(327, buttonLineY, buttonWidth, buttonHeight);
-        btnFive.setBounds(450, buttonLineY, 120, buttonHeight);
-
-        // Add our components to our main frame.
-        frame.getContentPane().add(lblTutoring);
-        frame.getContentPane().add(lblStudents);
-        frame.getContentPane().add(cmb);
-        frame.getContentPane().add(lblProblems);
-        frame.getContentPane().add(cmbProblems);
-        frame.getContentPane().add(lblName);
-        frame.getContentPane().add(txtName);
-        frame.getContentPane().add(lblProblem);
-        frame.getContentPane().add(txtSolution);
-        frame.getContentPane().add(btnOne);
-        frame.getContentPane().add(btnTwo);
-        frame.getContentPane().add(btnThree);
-        frame.getContentPane().add(btnFour);
-        frame.getContentPane().add(btnFive);
-
+    private void configureActionListeners()
+    {
         cmb.addActionListener(e ->
         {
+            updateStatus(statuses.CHANGING_STUDENT);
             if (cmb.getSelectedIndex() >= 0)
             {
                 currentStudent = StudentsList.students.get(cmb.getSelectedIndex());
             }
             updateFields(cmb.getSelectedIndex());
-            updateStatus(statuses.DEFAULT);
-
+            if (currentStudent.hasProblems())
+            {
+                updateStatus(statuses.SHOW_PROBLEMS);
+                currentProblem = currentStudent.getProblems().get(currentStudent.getMostRecentProblemIndex());
+            }
+            else
+            {
+                updateStatus(statuses.DEFAULT);
+            }
         });
 
         cmbProblems.addActionListener(e ->
         {
-            currentProblem = currentStudent.getProblems().get(cmbProblems.getSelectedIndex());
-            updateProblem();
+            if (currentStatus != statuses.ADD_PROBLEM &&
+                currentStatus != statuses.CHANGING_STUDENT &&
+                cmbProblems.getSelectedIndex() > -1
+            )
+            {
+                // update current problem.
+                currentProblem = currentStudent.getProblems().get(cmbProblems.getSelectedIndex());
+                currentStudent.setMostRecentProblemIndex(cmbProblems.getSelectedIndex());
+
+                // if the problem isn't solved, make sure we can edit it.
+                enableSolutionEntry(!currentProblem.isSolved());
+
+                updateProblem();
+            }
         });
 
         btnOne.addActionListener(e ->
@@ -221,9 +200,7 @@ public class Tutor
                     return;
 
                 case ADD_PROBLEM:
-                    currentStudent.addProblem(Problem.problemTypes.ADDITION);
-                    updateStatus(statuses.SHOW_PROBLEMS);
-                    updateFields(cmb.getSelectedIndex());
+                    addProblem(Problem.problemTypes.ADDITION);
                     return;
 
                 default:
@@ -248,13 +225,12 @@ public class Tutor
             switch (this.currentStatus)
             {
                 case DEFAULT:
+                case SHOW_PROBLEMS:
                     updateStatus(statuses.ADD_NEW);
                     return;
 
                 case ADD_PROBLEM:
-                    currentStudent.addProblem(Problem.problemTypes.SUBTRACTION);
-                    updateStatus(statuses.SHOW_PROBLEMS);
-                    updateFields(cmb.getSelectedIndex());
+                    addProblem(Problem.problemTypes.SUBTRACTION);
                     return;
 
                 default:
@@ -290,9 +266,7 @@ public class Tutor
                     return;
 
                 case ADD_PROBLEM:
-                    currentStudent.addProblem(Problem.problemTypes.MULTIPLICATION);
-                    updateStatus(statuses.SHOW_PROBLEMS);
-                    updateFields(cmb.getSelectedIndex());
+                    addProblem(Problem.problemTypes.MULTIPLICATION);
                     return;
 
                 default:
@@ -310,9 +284,7 @@ public class Tutor
                     return;
 
                 case ADD_PROBLEM:
-                    currentStudent.addProblem(Problem.problemTypes.DIVISION);
-                    updateStatus(statuses.SHOW_PROBLEMS);
-                    updateFields(cmb.getSelectedIndex());
+                    addProblem(Problem.problemTypes.DIVISION);
                     return;
 
                 default:
@@ -341,33 +313,217 @@ public class Tutor
         {
             switch (this.currentStatus)
             {
+                case ADD_PROBLEM:
+                    updateStatus(mostRecentStatus);
+                    break;
                 default:
                     updateStatus(statuses.ADD_PROBLEM);
                     return;
             }
         });
 
-        setupMenu();
+        btnSolve.addActionListener(e ->
+        {
+            // should only be enabled when a valid potential solution is entered.
+            trySolveProblem();
+        });
+
+        txtName.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e)
+            {
+                // we don't really care about keyTyped at the moment.
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e)
+            {
+                // we don't really care about keyPressed at the moment.
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e)
+            {
+                // first we want to make sure that what is entered is valid.
+                if (txtName.getText().matches(nameRegex))
+                {
+                    // If the key that was pressed was enter, let's submit.
+                    if (e.getKeyCode() == KeyEvent.VK_ENTER)
+                    {
+                        btnTwo.doClick();
+                        return;
+                    }
+                    return;
+                }
+            }
+        });
+
+        txtSolution.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e)
+            {
+                // we don't really care about keyTyped at the moment.
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e)
+            {
+                // we don't really care about keyPressed at the moment.
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e)
+            {
+                // first we want to make sure that what is entered is valid.
+                if (txtSolution.getText().matches(solutionRegex))
+                {
+                    // If the key that was pressed was enter, let's submit.
+                    if (e.getKeyCode() == KeyEvent.VK_ENTER)
+                    {
+                        btnSolve.doClick();
+                        return;
+                    }
+                    // If we have a potentially valid solution,
+                    // then we want to enable the submit answer button
+                    // but only if the problem isn't solved.
+                    allowSubmitAnswer(!currentProblem.isSolved());
+                    return;
+                }
+
+                // don't allow them to submit an answer.
+                allowSubmitAnswer(false);
+            }
+        });
     }
 
-    private void updateProblem()
+    private void configureButtons()
     {
-        if (currentProblem == null)
+        int buttonLineY = 40;
+        int buttonWidth = 89;
+        int buttonHeight = 23;
+        int problemFontSize = 20;
+
+        // Set up our buttons
+        btnOne.setEnabled(false);
+        btnTwo.setEnabled(false);
+        btnThree.setEnabled(false);
+        btnFour.setEnabled(false);
+        btnFive.setEnabled(false);
+        btnSolve.setEnabled(false);
+        btnOne.setBounds(15, buttonLineY, buttonWidth, buttonHeight);
+        btnTwo.setBounds(119, buttonLineY, buttonWidth, buttonHeight);
+        btnThree.setBounds(223, buttonLineY, buttonWidth, buttonHeight);
+        btnFour.setBounds(327, buttonLineY, buttonWidth, buttonHeight);
+        btnFive.setBounds(450, buttonLineY, 120, buttonHeight);
+        btnSolve.setBounds(380, 80, 200, buttonHeight*2);
+        btnSolve.setFont(new Font("ProblemButton", Font.BOLD, problemFontSize));
+    }
+
+    private void configureComboboxes()
+    {
+        // Set up students combo box
+        cmb.setModel(new DefaultComboBoxModel<>());
+        cmb.setBounds(230, 11, 132, 20);
+        cmb.setMaximumRowCount(4);
+
+        // Set up problems combo box
+        cmbProblems.setModel(new DefaultComboBoxModel<>());
+        cmbProblems.setBounds(450, 11, 150, 20);
+        cmbProblems.setMaximumRowCount(4);
+    }
+
+    private void configureFrame()
+    {
+        // Set up the main frame, use dimensions of example for simplicity.
+        frame.setBounds(650, 450, 640, 360);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().setLayout(null);
+        frame.setResizable(false);
+    }
+
+    private void configureLabels()
+    {
+        // Create labels for our components and set their positions.
+        lblTutoring = new JLabel("Elementary Tutoring");
+        lblTutoring.setBounds(10, 11, 150, 20);
+        lblTutoring.setHorizontalAlignment(SwingConstants.LEFT);
+        lblStudents = new JLabel("Student");
+        lblStudents.setBounds(180, 13, 45, 14);
+
+        // Problems combobox and student name entry will go in the same place.
+        lblProblems = new JLabel("Problems");
+        lblProblems.setBounds(390, 13, 60, 14);
+        lblName = new JLabel("Name");
+        lblName.setBounds(400, 13, 64, 14);
+    }
+
+    private void configureProblemArea()
+    {
+        // Set up problem solving area.
+        int problemFontSize = 20;
+        Font font = new Font("Problem", Font.PLAIN, problemFontSize);
+
+        lblProblem = new JLabel();
+        lblProblem.setBounds(10, 82, 250, 46);
+        lblProblem.setFont(font);
+        lblProblem.setHorizontalAlignment(SwingConstants.RIGHT);
+        lblProblem.setHorizontalTextPosition(SwingConstants.RIGHT);
+        txtSolution.setBounds(277, 80, 90,46);
+        txtSolution.setColumns(10);
+        txtSolution.setFont(font);
+    }
+
+    private void configureTextFields()
+    {
+        // Set up text field.
+        txtName.setBounds(450, 11, 150, 20);
+        txtName.setColumns(10);
+    }
+
+    private void enableSolutionEntry(boolean shouldEnable)
+    {
+        if (shouldEnable)
         {
-            return;
-        }
-        String[] words = currentProblem.toString().split(" ");
-        if (currentProblem.isSolved())
-        {
-            txtSolution.setText(currentProblem.solution + "");
-            lblProblem.setText(currentProblem.toString().replace(words[words.length-1], ""));
+            txtSolution.setEnabled(true);
+            txtSolution.setText("");
         }
         else
         {
-            lblProblem.setText(currentProblem.toString().replace(words[words.length-1], ""));
+            txtSolution.setText(currentProblem.solution + "");
+            txtSolution.setEnabled(false);
+            btnSolve.setEnabled(false);
         }
+    }
 
+    /**
+     * Initialize the values for our app.
+     */
+    private void initialize()
+    {
+        // Initialize variables.
+        isFileSaved = false;
+        storageFileName = "students.ser";
+        frame = new JFrame();
+        cmb = new JComboBox<>();
+        cmbProblems = new JComboBox<>();
+        txtName = new JTextField();
+        txtSolution = new JTextField();
+        btnOne = new JButton("New");
+        btnTwo = new JButton("Add");
+        btnThree = new JButton("Update");
+        btnFour = new JButton("Delete");
+        btnFive = new JButton("New Problem");
+        btnSolve = new JButton("Submit Answer");
 
+        configureFrame();
+        configureLabels();
+        configureComboboxes();
+        configureTextFields();
+        configureProblemArea();
+        configureButtons();
+        addComponents();
+        configureActionListeners();
+        setupMenu();
     }
 
     private void loadStudents()
@@ -377,6 +533,14 @@ public class Tutor
             cmb.addItem(item.getName());
         }
         cmb.setSelectedIndex(0);
+        if (StudentsList.students.size() > 0)
+        {
+            currentStudent = StudentsList.students.get(cmb.getSelectedIndex());
+            if (currentStudent.hasProblems())
+            {
+                currentProblem = currentStudent.getProblems().get(currentStudent.getMostRecentProblemIndex());
+            }
+        }
         updateFields(0);
     }
 
@@ -434,10 +598,12 @@ public class Tutor
         btnThree.setEnabled(false);
         btnFour.setEnabled(false);
         btnFive.setVisible(false);
+        btnSolve.setVisible(false);
         btnOne.setText("New");
         btnTwo.setText("Add");
         btnThree.setText("Update");
         btnFour.setText("Delete");
+        btnFive.setText("New Problem");
         lblProblems.setVisible(false);
         cmbProblems.setVisible(false);
         lblName.setVisible(true);
@@ -445,6 +611,8 @@ public class Tutor
         lblProblem.setVisible(false);
         txtSolution.setVisible(false);
         migrateButtons(buttonPositions.DEFAULT);
+        txtName.setText("");
+        txtName.requestFocusInWindow();
     }
 
     private void renderAddNewProblemLayout()
@@ -453,11 +621,13 @@ public class Tutor
         btnTwo.setEnabled(true);
         btnThree.setEnabled(true);
         btnFour.setEnabled(true);
-        btnFive.setEnabled(false);
+        btnFive.setEnabled(true);
+        btnSolve.setVisible(false);
         btnOne.setText("Addition");
         btnTwo.setText("Subtraction");
         btnThree.setText("Multiplication");
         btnFour.setText("Division");
+        btnFive.setText("Cancel");
         lblProblems.setVisible(true);
         cmbProblems.setVisible(true);
         lblName.setVisible(false);
@@ -475,10 +645,12 @@ public class Tutor
         btnFour.setEnabled(true);
         btnFive.setEnabled(true);
         btnFive.setVisible(true);
+        btnSolve.setVisible(false);
         btnOne.setText("New");
         btnTwo.setText("Add");
         btnThree.setText("Update");
         btnFour.setText("Delete");
+        btnFive.setText("New Problem");
         lblProblems.setVisible(true);
         cmbProblems.setVisible(true);
         lblName.setVisible(false);
@@ -495,10 +667,12 @@ public class Tutor
         btnThree.setEnabled(true);
         btnFour.setEnabled(true);
         btnFive.setVisible(false);
+        btnSolve.setVisible(false);
         btnOne.setText("Add New");
         btnTwo.setText("Add");
         btnThree.setText("Submit");
         btnFour.setText("Cancel");
+        btnFive.setText("New Problem");
         lblProblems.setVisible(false);
         cmbProblems.setVisible(false);
         lblName.setVisible(true);
@@ -510,16 +684,19 @@ public class Tutor
 
     private void renderProblemLayout()
     {
+
         btnOne.setEnabled(true);
         btnTwo.setEnabled(true);
         btnThree.setEnabled(true);
         btnFour.setEnabled(true);
         btnFive.setEnabled(true);
         btnFive.setVisible(true);
+        btnSolve.setVisible(true);
         btnOne.setText("New");
         btnTwo.setText("Add");
         btnThree.setText("Update");
         btnFour.setText("Delete");
+        btnFive.setText("New Problem");
         lblProblems.setVisible(true);
         cmbProblems.setVisible(true);
         lblName.setVisible(false);
@@ -527,6 +704,10 @@ public class Tutor
         lblProblem.setVisible(true);
         txtSolution.setVisible(true);
         migrateButtons(buttonPositions.DEFAULT);
+        if (currentProblem != null)
+        {
+            enableSolutionEntry(!currentProblem.isSolved());
+        }
     }
 
     private void setupMenu()
@@ -562,10 +743,17 @@ public class Tutor
             }
 
             //read the file and load the comboBox
-            if (StudentsList.readContactFile(storageFileName))
+            if (StudentsList.readStudentFile(storageFileName))
             {
                 loadStudents();
-                updateStatus(statuses.DEFAULT);
+                if (currentStudent != null && currentProblem != null)
+                {
+                    updateStatus(statuses.SHOW_PROBLEMS);
+                }
+                else
+                {
+                    updateStatus(statuses.DEFAULT);
+                }
                 isFileSaved = true;
             }
             else
@@ -636,6 +824,19 @@ public class Tutor
         mnHelp.add(mnuAbout);
     }
 
+    private void trySolveProblem()
+    {
+        boolean isSolved = currentStudent.trySolveProblem(cmbProblems.getSelectedIndex(), Integer.parseInt(txtSolution.getText()));
+        if (isSolved)
+        {
+            // If they got it right, let's let them know that they did.
+            String message = "You got it right!";
+            JOptionPane.showMessageDialog(frame, message, "Congratulations", JOptionPane.INFORMATION_MESSAGE);
+            // on a correct answer, a refresh of the arraylist is triggered. Let's react accordingly.
+            cmb.setSelectedIndex(cmb.getSelectedIndex());
+        }
+    }
+
     private void updateFields(int selectedIndex)
     {
         // We don't want to do anything if we don't have a valid index.
@@ -645,18 +846,39 @@ public class Tutor
         }
         txtName.setText(currentStudent.getName());
 
-        // We don't want to remove all items if we are adding new problems to a current student.
-        // That would be very heavy.
+        // clear out our list.
         cmbProblems.removeAllItems();
 
         if (currentStudent.hasProblems())
         {
             for (Problem p : currentStudent.getProblems())
             {
-                cmbProblems.addItem(String.format("%-15s\t%-8s", p.toString(), p.answer == p.solution ? "Solved" : "Unsolved"));
+                // This is where we would have liked to be able to insert items to the cmb at a specific index.
+                // Unfortunately, the JComboBox component doesn't support adding items at a specific index so
+                // we have to rebuild our list every time we update it if we want our item at the top (which we do).
+                String toAdd = String.format("%-15s\t%-8s", p.toString(), p.isSolved() ? "Solved" : "Unsolved");
+                cmbProblems.addItem(toAdd);
             }
 
             cmbProblems.setSelectedIndex(currentStudent.getMostRecentProblemIndex());
+        }
+    }
+
+    private void updateProblem()
+    {
+        if (currentProblem == null)
+        {
+            return;
+        }
+        String[] words = currentProblem.toString().split(" ");
+        if (currentProblem.isSolved())
+        {
+            txtSolution.setText(currentProblem.solution + "");
+            lblProblem.setText(currentProblem.toString().replace(words[words.length-1], ""));
+        }
+        else
+        {
+            lblProblem.setText(currentProblem.toString().replace(words[words.length-1], ""));
         }
     }
 
@@ -676,14 +898,15 @@ public class Tutor
             case SHOW_PROBLEMS:
                 renderProblemLayout();
                 break;
+            case CHANGING_STUDENT:
+                // don't do anything, just update the status.
+                break;
             case DEFAULT:
             default:
                 renderDefaultLayout();
                 break;
         }
-
+        this.mostRecentStatus = currentStatus;
         this.currentStatus = status;
     }
 }
-
-//FIXME: IMPLEMENT INVALIDNAMEEXCEPTION IF THEIR NAME ISN'T RIGHT.

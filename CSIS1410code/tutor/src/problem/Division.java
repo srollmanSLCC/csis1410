@@ -1,5 +1,6 @@
 package problem;
 
+import java.io.Serializable;
 import java.util.Random;
 
 public class Division extends Problem
@@ -34,6 +35,6 @@ public class Division extends Problem
     @Override
     public String toString()
     {
-        return String.format("%d %% %d = %s", firstNum, secondNum, (isSolved()) ? "" + solution : "?");
+        return String.format("%d / %d = %s", firstNum, secondNum, (isSolved()) ? "" + solution : "?");
     }
 }

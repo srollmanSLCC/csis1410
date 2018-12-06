@@ -1,6 +1,8 @@
 package problem;
 
-public abstract class Problem
+import java.io.Serializable;
+
+public abstract class Problem implements Serializable
 {
     public enum problemTypes
     {

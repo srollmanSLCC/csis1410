@@ -35,9 +35,61 @@ public class Student implements Serializable
     public void addProblem(Problem.problemTypes type)
     {
         Problem p = createProblem(type);
-        this.problems.add(p);
-        this.problems.sort(new ProblemComparator());
+        // new problems get added at the beginning of the arraylist.
+        this.problems.add(0,p);
         mostRecentProblemIndex = this.problems.indexOf(p);
+    }
+
+    public int getMostRecentProblemIndex()
+    {
+        return this.mostRecentProblemIndex;
+    }
+
+    public String getName()
+    {
+        return this.name;
+    }
+
+    public ArrayList<Problem> getProblems()
+    {
+        return this.problems;
+    }
+
+    public boolean hasProblems()
+    {
+        return this.problems.size() > 0;
+    }
+
+    public void setMostRecentProblemIndex(int mostRecentProblemIndex)
+    {
+        this.mostRecentProblemIndex = mostRecentProblemIndex;
+    }
+
+    public void setName(String value)
+    {
+        if (value != null && value != "" && value.matches("^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$"))
+        {
+            this.name = value;
+        }
+    }
+
+    public boolean trySolveProblem(int problemToSolve, int potentialSolution) throws IndexOutOfBoundsException
+    {
+        Problem p = problems.get(problemToSolve);
+        if (p == null)
+        {
+            // We didn't get the right index, obviously.
+            throw new IndexOutOfBoundsException();
+        }
+
+        p.setAnswer(potentialSolution);
+
+        if (p.isSolved())
+        {
+            mostRecentProblemIndex = refreshProblems(true);
+        }
+        return p.isSolved();
+
     }
 
     private Problem createProblem(Problem.problemTypes type)
@@ -63,31 +115,56 @@ public class Student implements Serializable
         return newProblem;
     }
 
-    public String getName()
+    /**
+     * Refresh the problems arrayList to maintain a good order of unsolved -> solved in the order they were added/solved.
+     * @return an int representing the index of a problem that was recently solved and was moved.
+     */
+    private int refreshProblems(boolean triggeredOnSolved)
     {
-        return this.name;
-    }
-
-    public void setName(String value)
-    {
-        if (value != null && value != "" && value.matches("^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$"))
+        if (!hasProblems())
         {
-            this.name = value;
+            return -1;
+        }
+        int lastUnsolved = -1;
+        int firstSolved = -1;
+        for (int i = 0; i < problems.size(); i++)
+        {
+            if (!problems.get(i).isSolved())
+            {
+                // if it's unsolved, set lastUnsolved = i;
+                lastUnsolved = i;
+            }
+            else if (firstSolved == -1)
+            {
+                firstSolved = i;
+            }
+        }
+
+        // if we are ordered correctly, but we know we solved one, return the index of the first solved.
+        if ((lastUnsolved < firstSolved) && triggeredOnSolved)
+        {
+            return firstSolved;
+        }
+        // if our firstSolved < lastUnsolved, we have solved a problem since we last refreshed.
+        else if (firstSolved < lastUnsolved || triggeredOnSolved)
+        {
+            while (firstSolved < lastUnsolved)
+            {
+                firstSolved = shiftRight(firstSolved);
+            }
+            return firstSolved;
+        }
+        else
+        {
+            return -1;
         }
     }
 
-    public int getMostRecentProblemIndex()
+    private int shiftRight(int indexToShift)
     {
-        return this.mostRecentProblemIndex;
-    }
-
-    public boolean hasProblems()
-    {
-        return this.problems.size() > 0;
-    }
-
-    public ArrayList<Problem> getProblems()
-    {
-        return this.problems;
+        Problem toMoveLeft = problems.get(indexToShift + 1);
+        problems.set(indexToShift + 1, problems.get(indexToShift));
+        problems.set(indexToShift, toMoveLeft);
+        return indexToShift + 1;
     }
 }
