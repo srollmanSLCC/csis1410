@@ -10,19 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d0cf08ac-04db-4da6-90d1-c9368139c0f5" name="Default" comment="add manifest for building tutor.">
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/ArrayAccess.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/M5A2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/M5A5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/M6A2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/PigLatin.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/TotalBeginner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/craps.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/distance.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/inheritance.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/midterm1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/midterm2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/parkingCharges.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/tutor.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -151,8 +139,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tutor/src/problem/Tutor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="13" column="5" lean-forward="true" selection-start-line="13" selection-start-column="5" selection-end-line="13" selection-end-column="5" />
+            <state relative-caret-position="459">
+              <caret line="27" column="54" lean-forward="true" selection-start-line="27" selection-start-column="54" selection-end-line="27" selection-end-column="54" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#3945#3946#0" expanded="true" />
@@ -352,7 +340,7 @@
     <property name="Repository.Attach.Sources" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1544113751054" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1544115707629" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit4" />
     <property name="create.test.in.the.same.root" value="true" />
     <property name="extract.method.default.visibility" value="private" />
@@ -725,7 +713,7 @@
       <workItem from="1543946613779" duration="4479000" />
       <workItem from="1543957303369" duration="957000" />
       <workItem from="1543958475069" duration="3070000" />
-      <workItem from="1544112485258" duration="1073000" />
+      <workItem from="1544112485258" duration="1942000" />
     </task>
     <task id="LOCAL-00001" summary="don't include binaries in source control">
       <created>1543960486449</created>
@@ -762,7 +750,14 @@
       <option name="project" value="LOCAL" />
       <updated>1544113332425</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="add manifest for building tutor.">
+      <created>1544113825189</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1544113825189</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -798,7 +793,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="143232000" />
+    <option name="totallyTimeSpent" value="144101000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1272,8 +1267,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tutor/src/problem/Tutor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="13" column="5" lean-forward="true" selection-start-line="13" selection-start-column="5" selection-end-line="13" selection-end-column="5" />
+        <state relative-caret-position="459">
+          <caret line="27" column="54" lean-forward="true" selection-start-line="27" selection-start-column="54" selection-end-line="27" selection-end-column="54" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#3945#3946#0" expanded="true" />
