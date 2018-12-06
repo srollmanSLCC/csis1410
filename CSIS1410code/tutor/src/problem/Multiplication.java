@@ -1,6 +1,5 @@
 package problem;
 
-import java.io.Serializable;
 import java.util.Random;
 
 public class Multiplication extends Problem

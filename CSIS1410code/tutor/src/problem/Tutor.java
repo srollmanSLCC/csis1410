@@ -29,21 +29,10 @@ public class Tutor
     private statuses mostRecentStatus;
 
     public static JFrame frame;
-    private JComboBox<String> cmb;
-    private JComboBox<String> cmbProblems;
-    private JTextField txtName;
-    private JTextField txtSolution;
-    private JLabel lblTutoring;
-    private JLabel lblStudents;
-    private JLabel lblProblems;
-    private JLabel lblName;
-    private JLabel lblProblem;
-    private JButton btnOne;
-    private JButton btnTwo;
-    private JButton btnThree;
-    private JButton btnFour;
-    private JButton btnFive;
-    private JButton btnSolve;
+    private JComboBox<String> cmb, cmbProblems;
+    private JTextField txtName, txtSolution;
+    private JLabel lblTutoring, lblStudents, lblProblems, lblName, lblProblem;
+    private JButton btnOne, btnTwo, btnThree, btnFour, btnFive, btnSolve;
     private String storageFileName;
     private boolean isFileSaved;
 

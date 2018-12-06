@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.io.EOFException;
+import java.util.Arrays;
 
 public class StudentsList
 {
@@ -56,7 +57,7 @@ public class StudentsList
         }
         catch (IOException ioException)
         {
-            System.err.println("ioException:\n" + ioException.getStackTrace());
+            System.err.println("ioException:\n" + Arrays.toString(ioException.getStackTrace()));
         }
 
         try
