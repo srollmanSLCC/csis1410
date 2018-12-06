@@ -12,12 +12,12 @@ public class Tutor
 {
     public enum statuses
     {
-        ADD_NEW, ADD_PROBLEM, CHANGING_STUDENT, DEFAULT, EDIT, SHOW_PROBLEMS
+        ADD_NEW, ADD_PROBLEM, CHANGING_STUDENT, DEFAULT, EDIT, SHOW_PROBLEMS, TUTOR
     }
 
     public enum buttonPositions
     {
-        DEFAULT, PROBLEMS
+        DEFAULT, PROBLEMS, TUTOR
     }
 
     private final String nameRegex = "^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$";
@@ -148,6 +148,7 @@ public class Tutor
             {
                 updateStatus(statuses.SHOW_PROBLEMS);
                 currentProblem = currentStudent.getProblems().get(currentStudent.getMostRecentProblemIndex());
+                updateProblem();
             }
             else
             {
@@ -177,6 +178,10 @@ public class Tutor
         {
             switch (this.currentStatus)
             {
+                case TUTOR:
+                    // I need to go back.
+                    updateStatus(statuses.SHOW_PROBLEMS);
+                    break;
                 case EDIT:
                     try
                     {
@@ -521,16 +526,16 @@ public class Tutor
         {
             cmb.addItem(item.getName());
         }
-        cmb.setSelectedIndex(0);
         if (StudentsList.students.size() > 0)
         {
-            currentStudent = StudentsList.students.get(cmb.getSelectedIndex());
+            currentStudent = StudentsList.students.get(0);
             if (currentStudent.hasProblems())
             {
                 currentProblem = currentStudent.getProblems().get(currentStudent.getMostRecentProblemIndex());
             }
         }
         updateFields(0);
+        cmb.setSelectedIndex(0);
     }
 
     private void migrateButtons(buttonPositions position)
@@ -542,6 +547,11 @@ public class Tutor
 
         switch (position)
         {
+            case TUTOR:
+                buttonWidth = 89;
+                buttonHeight = 23;
+                btnOne.setBounds(3,3, buttonWidth,buttonHeight);
+                break;
             case PROBLEMS:
                 buttonLineX = 450;
                 buttonLineY = 40;
@@ -673,7 +683,6 @@ public class Tutor
 
     private void renderProblemLayout()
     {
-
         btnOne.setEnabled(true);
         btnTwo.setEnabled(true);
         btnThree.setEnabled(true);
@@ -693,6 +702,38 @@ public class Tutor
         lblProblem.setVisible(true);
         txtSolution.setVisible(true);
         migrateButtons(buttonPositions.DEFAULT);
+        if (currentProblem != null)
+        {
+            enableSolutionEntry(!currentProblem.isSolved());
+        }
+    }
+
+    private void renderShowTutor()
+    {
+        // TODO make component for tutor, pass in type of problem.
+        btnOne.setEnabled(true);
+        btnOne.setVisible(true);
+        btnTwo.setEnabled(false);
+        btnTwo.setVisible(false);
+        btnThree.setEnabled(false);
+        btnThree.setVisible(false);
+        btnFour.setEnabled(false);
+        btnFour.setVisible(false);
+        btnFive.setEnabled(false);
+        btnFive.setVisible(false);
+        btnSolve.setVisible(false);
+        btnOne.setText("Back");
+        btnTwo.setText("Add");
+        btnThree.setText("Update");
+        btnFour.setText("Delete");
+        btnFive.setText("New Problem");
+        lblProblems.setVisible(false);
+        cmbProblems.setVisible(false);
+        lblName.setVisible(false);
+        txtName.setVisible(false);
+        lblProblem.setVisible(false);
+        txtSolution.setVisible(false);
+        migrateButtons(buttonPositions.TUTOR);
         if (currentProblem != null)
         {
             enableSolutionEntry(!currentProblem.isSolved());
@@ -824,6 +865,13 @@ public class Tutor
             // on a correct answer, a refresh of the arraylist is triggered. Let's react accordingly.
             cmb.setSelectedIndex(cmb.getSelectedIndex());
         }
+        else
+        {
+            // If they got it wrong, let's let them know that they did.
+            String message = "You got it wrong.";
+            JOptionPane.showMessageDialog(frame, message, "Sorry!", JOptionPane.WARNING_MESSAGE);
+            txtSolution.requestFocusInWindow();
+        }
     }
 
     private void updateFields(int selectedIndex)
@@ -863,7 +911,13 @@ public class Tutor
         if (currentProblem.isSolved())
         {
             txtSolution.setText(currentProblem.solution + "");
-            lblProblem.setText(currentProblem.toString().replace(words[words.length-1], ""));
+            // rebuild our string but ignore the solution;
+            StringBuilder sb = new StringBuilder();
+            for(int i = 0; i < words.length - 1; i++)
+            {
+                sb.append(words[i] + " ");
+            }
+            lblProblem.setText(sb.toString().trim());
         }
         else
         {
@@ -889,6 +943,9 @@ public class Tutor
                 break;
             case CHANGING_STUDENT:
                 // don't do anything, just update the status.
+                break;
+            case TUTOR:
+                renderShowTutor();
                 break;
             case DEFAULT:
             default:

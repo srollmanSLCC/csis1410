@@ -86,7 +86,7 @@ public class Student implements Serializable
 
         if (p.isSolved())
         {
-            mostRecentProblemIndex = refreshProblems(true);
+            setMostRecentProblemIndex(refreshProblems(true));
         }
         return p.isSolved();
 
