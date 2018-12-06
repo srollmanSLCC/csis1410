@@ -9,21 +9,7 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d0cf08ac-04db-4da6-90d1-c9368139c0f5" name="Default" comment="add manifest for building tutor.">
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/ArrayAccess.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/M5A2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/M5A5.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/M6A2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/PigLatin.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/TotalBeginner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/craps.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/distance.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/inheritance.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/midterm1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/midterm2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/parkingCharges.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/tutor.xml" afterDir="false" />
-    </list>
+    <list default="true" id="d0cf08ac-04db-4da6-90d1-c9368139c0f5" name="Default" comment="add manifest for building tutor." />
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -151,8 +137,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tutor/src/problem/Tutor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="13" column="5" lean-forward="true" selection-start-line="13" selection-start-column="5" selection-end-line="13" selection-end-column="5" />
+            <state relative-caret-position="391">
+              <caret line="23" column="54" lean-forward="true" selection-start-line="23" selection-start-column="54" selection-end-line="23" selection-end-column="54" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#3945#3946#0" expanded="true" />
@@ -239,6 +225,11 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/.." value="config" />
+      </map>
+    </option>
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -798,7 +789,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="143232000" />
+    <option name="totallyTimeSpent" value="143383000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -811,6 +802,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Image Layers" order="0" />
       <window_info id="Designer" order="1" />
@@ -1272,8 +1264,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tutor/src/problem/Tutor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="13" column="5" lean-forward="true" selection-start-line="13" selection-start-column="5" selection-end-line="13" selection-end-column="5" />
+        <state relative-caret-position="391">
+          <caret line="23" column="54" lean-forward="true" selection-start-line="23" selection-start-column="54" selection-end-line="23" selection-end-column="54" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#3945#3946#0" expanded="true" />
