@@ -2,8 +2,14 @@ package problem;
 
 import java.util.Random;
 
+/**
+ * Addition class.
+ */
 public class Addition extends Problem
 {
+    /**
+     * Default constructor.
+     */
     public Addition ()
     {
         Random r = new Random();
@@ -13,24 +19,30 @@ public class Addition extends Problem
         this.answer = -100000;
     }
 
-    @Override
-    public String helper()
-    {
-        return null;
-    }
-
+    /**
+     * Overridden isSolved method from Parent.
+     * @return true if this problem is solved.
+     */
     @Override
     public boolean isSolved()
     {
         return this.solution == this.answer;
     }
 
+    /**
+     * Overridden setAnswer method from parent.
+     * @param answer the answer to set as the current answer to our problem (regardless if correct)
+     */
     @Override
     public void setAnswer(int answer)
     {
         this.answer = answer;
     }
 
+    /**
+     * Overridden toString method.
+     * @return A string representing this problem.
+     */
     @Override
     public String toString()
     {
