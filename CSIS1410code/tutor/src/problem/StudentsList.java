@@ -10,17 +10,28 @@ import java.io.IOException;
 import java.io.EOFException;
 import java.util.Arrays;
 
+/**
+ * Class StudentsList
+ */
 public class StudentsList
 {
     static ArrayList<Student> students;
     private static ObjectOutputStream output;
     private static ObjectInputStream input;
 
+    /**
+     * Default constructor.
+     */
     public StudentsList()
     {
         students = new ArrayList<>();
     }
 
+    /**
+     * Reads students in from a file.
+     * @param fileName The name of the file.
+     * @return true if successful.
+     */
     public static boolean readStudentFile(String fileName)
     {
         boolean success = false;
@@ -76,7 +87,10 @@ public class StudentsList
         return success;
     }
 
-
+    /**
+     * Write student data out to serialized file.
+     * @param fileName the name of the file to create.
+     */
     public static void writeStudentsFile(String fileName)
     {
         try

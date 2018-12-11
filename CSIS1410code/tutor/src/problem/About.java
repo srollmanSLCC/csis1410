@@ -3,6 +3,9 @@ package problem;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * About component
+ */
 public class About extends JDialog
 {
     /**
