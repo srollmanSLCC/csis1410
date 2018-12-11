@@ -43,7 +43,7 @@ public class Tutor
     private JComboBox<String> cmb, cmbProblems;
     private JTextField txtName, txtSolution;
     private JLabel lblTutoring, lblStudents, lblProblems, lblName, lblProblem;
-    private JLabel lblHeader, lblLineOne; //, lblLineTwo, lblLineThree, lblLineFour, lblLineFive;
+    private JLabel lblHeader, lblHtmlContent; 
     private JButton btnOne, btnTwo, btnThree, btnFour, btnFive, btnSolve, btnGetHelp;
     private JPanel panelTutor;
     private String storageFileName;
@@ -114,7 +114,7 @@ public class Tutor
         frame.getContentPane().add(btnGetHelp);
         frame.getContentPane().add(panelTutor);
         frame.getContentPane().add(lblHeader);
-        panelTutor.add(lblLineOne);
+        panelTutor.add(lblHtmlContent);
     }
 
     /**
@@ -155,7 +155,7 @@ public class Tutor
     /**
      * Clears the environment.
      */
-    void clear()
+    private void clear()
     {
         txtName.setText("");
         cmb.removeAllItems();
@@ -188,51 +188,6 @@ public class Tutor
 
         // I can guarantee that I have a problem because type was not null.
         setTutorStrings(type, tutorProblem);
-    }
-
-    /**
-     * Calls the methods to build our Tutoring strings to help the user solve a problem.
-     * @param type The type of problem to tutor.
-     * @param tutorProblem The problem to show how to solve as an example.
-     */
-    private void setTutorStrings(Problem.problemTypes type, Problem tutorProblem)
-    {
-        switch (type)
-        {
-            case ADDITION:
-                genAddStrings(tutorProblem);
-                break;
-
-            case SUBTRACTION:
-                genSubtractStrings(tutorProblem);
-                break;
-
-            case MULTIPLICATION:
-                genMultStrings(tutorProblem);
-                break;
-
-            case DIVISION:
-                genDivStrings(tutorProblem);
-                break;
-        }
-    }
-
-    /**
-     * Generate the Division Tutor data for the provided problem.
-     * @param problem The problem to show how to solve.
-     */
-    private void genDivStrings(Problem problem)
-    {
-
-    }
-
-    /**
-     * Generate the Multiplication Tutor data for the provided problem.
-     * @param problem The problem to show how to solve.
-     */
-    private void genMultStrings(Problem problem)
-    {
-
     }
 
     /**
@@ -606,10 +561,10 @@ public class Tutor
         lblHeader.setBounds(300,0,lineWidth,30);
 
         // Use a label that we will inject html into to display.
-        lblLineOne = new JLabel("MyText",SwingConstants.LEFT);
-        lblLineOne.setVerticalAlignment(SwingConstants.TOP);
-        lblLineOne.setFont(new Font("Courier New",Font.PLAIN, 11));
-        lblLineOne.setBounds(offset, 0, 640-(offset*2), 500-(offset*2));
+        lblHtmlContent = new JLabel("MyText",SwingConstants.LEFT);
+        lblHtmlContent.setVerticalAlignment(SwingConstants.TOP);
+        lblHtmlContent.setFont(new Font("Courier New",Font.PLAIN, 11));
+        lblHtmlContent.setBounds(offset, 0, 640-(offset*2), 500-(offset*2));
     }
 
     /**
@@ -708,6 +663,7 @@ public class Tutor
 
         lblHeader.setText("Addition Problem");
         StringBuilder content = new StringBuilder();
+
         // First section.
         int firstMod = p.firstNum % 10;
         int secondMod = p.secondNum % 10;
@@ -789,7 +745,25 @@ public class Tutor
             );
             content.append(convertToHTML(sb.toString()));
         }
-        lblLineOne.setText(String.format(htmlBlock, content.toString()));
+        lblHtmlContent.setText(String.format(htmlBlock, content.toString()));
+    }
+
+    /**
+     * Generate the Division Tutor data for the provided problem.
+     * @param problem The problem to show how to solve.
+     */
+    private void genDivStrings(Problem problem)
+    {
+
+    }
+
+    /**
+     * Generate the Multiplication Tutor data for the provided problem.
+     * @param problem The problem to show how to solve.
+     */
+    private void genMultStrings(Problem problem)
+    {
+
     }
 
     /**
@@ -895,7 +869,7 @@ public class Tutor
             );
             content.append(convertToHTML(sb.toString()));
         }
-        lblLineOne.setText(String.format(htmlBlock, content.toString()));
+        lblHtmlContent.setText(String.format(htmlBlock, content.toString()));
     }
 
     /**
@@ -1227,6 +1201,33 @@ public class Tutor
     }
 
     /**
+     * Calls the methods to build our Tutoring strings to help the user solve a problem.
+     * @param type The type of problem to tutor.
+     * @param tutorProblem The problem to show how to solve as an example.
+     */
+    private void setTutorStrings(Problem.problemTypes type, Problem tutorProblem)
+    {
+        switch (type)
+        {
+            case ADDITION:
+                genAddStrings(tutorProblem);
+                break;
+
+            case SUBTRACTION:
+                genSubtractStrings(tutorProblem);
+                break;
+
+            case MULTIPLICATION:
+                genMultStrings(tutorProblem);
+                break;
+
+            case DIVISION:
+                genDivStrings(tutorProblem);
+                break;
+        }
+    }
+
+    /**
      * Sets up the JMenu.
      */
     private void setupMenu()
@@ -1367,23 +1368,6 @@ public class Tutor
     }
 
     /**
-     * Dynamic sizing based on state of our app.
-     * @param status
-     */
-    private void updateFrameSize(statuses status)
-    {
-        switch (status)
-        {
-            case TUTOR:
-                frame.setBounds(650, 250, 640, 500);
-                break;
-            default:
-                frame.setBounds(650, 250, 640, 360);
-                break;
-        }
-    }
-
-    /**
      * Update the fields based on the selected index of our student cmb.
      * @param selectedIndex The selected index of cmb.
      */
@@ -1411,6 +1395,23 @@ public class Tutor
             }
 
             cmbProblems.setSelectedIndex(currentStudent.getMostRecentProblemIndex());
+        }
+    }
+
+    /**
+     * Dynamic sizing based on state of our app.
+     * @param status
+     */
+    private void updateFrameSize(statuses status)
+    {
+        switch (status)
+        {
+            case TUTOR:
+                frame.setBounds(650, 250, 640, 500);
+                break;
+            default:
+                frame.setBounds(650, 250, 640, 360);
+                break;
         }
     }
 
