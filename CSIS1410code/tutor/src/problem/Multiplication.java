@@ -13,8 +13,15 @@ public class Multiplication extends Problem
     public Multiplication ()
     {
         Random r = new Random();
-        this.firstNum = r.nextInt(20);
-        this.secondNum = r.nextInt(20);
+        this.firstNum = r.nextInt(15);
+        this.secondNum = r.nextInt(9);
+        // We want the larger number on top always.
+        if (this.firstNum < this.secondNum)
+        {
+            int tmp = this.firstNum;
+            this.firstNum = this.secondNum;
+            this.secondNum = tmp;
+        }
         this.solution = firstNum * secondNum;
         this.answer = -10000;
     }

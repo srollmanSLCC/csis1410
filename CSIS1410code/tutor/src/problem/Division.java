@@ -14,8 +14,8 @@ public class Division extends Problem
     {
         Random r = new Random();
         // ensure we don't get a 0 by adding 1
-        this.secondNum = r.nextInt(9) + 1;
-        this.firstNum = this.secondNum * r.nextInt(20);
+        this.secondNum = r.nextInt(8) + 1;
+        this.firstNum = this.secondNum * (r.nextInt(19) + 1);
         this.solution = firstNum / secondNum;
         this.answer = -10000;
     }
