@@ -1,13 +1,14 @@
 package problem;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.file.Path;
-import java.util.ArrayList;
 
 /**
  * The Tutor class that runs our app.
@@ -19,7 +20,7 @@ public class Tutor
      */
     public enum statuses
     {
-        ADD_NEW, ADD_PROBLEM, CHANGING_STUDENT, DEFAULT, EDIT, SHOW_PROBLEMS, TUTOR
+        ADD_NEW, ADD_PROBLEM, CHANGING_STUDENT, CLEARING, DEFAULT, EDIT, RENDER_TUTOR, SHOW_PROBLEMS, TUTOR
     }
 
     /**
@@ -43,7 +44,7 @@ public class Tutor
     private JComboBox<String> cmb, cmbProblems;
     private JTextField txtName, txtSolution;
     private JLabel lblTutoring, lblStudents, lblProblems, lblName, lblProblem;
-    private JLabel lblHeader, lblHtmlContent; 
+    private JLabel lblHeader, lblHtmlContent, lblImage;
     private JButton btnOne, btnTwo, btnThree, btnFour, btnFive, btnSolve, btnGetHelp;
     private JPanel panelTutor;
     private String storageFileName;
@@ -105,6 +106,7 @@ public class Tutor
         frame.getContentPane().add(txtName);
         frame.getContentPane().add(lblProblem);
         frame.getContentPane().add(txtSolution);
+        frame.getContentPane().add(lblImage);
         frame.getContentPane().add(btnOne);
         frame.getContentPane().add(btnTwo);
         frame.getContentPane().add(btnThree);
@@ -157,7 +159,11 @@ public class Tutor
      */
     private void clear()
     {
+        updateStatus(statuses.CLEARING);
+        StudentsList.students.clear();
         txtName.setText("");
+        currentStudent = null;
+        currentProblem = null;
         cmb.removeAllItems();
     }
 
@@ -197,6 +203,11 @@ public class Tutor
     {
         cmb.addActionListener(e ->
         {
+            if (currentStatus == statuses.CLEARING)
+            {
+                return;
+            }
+
             updateStatus(statuses.CHANGING_STUDENT);
             if (cmb.getSelectedIndex() >= 0)
             {
@@ -206,8 +217,7 @@ public class Tutor
             if (currentStudent.hasProblems())
             {
                 updateStatus(statuses.SHOW_PROBLEMS);
-                currentProblem = currentStudent.getProblems().get(currentStudent.getMostRecentProblemIndex());
-                updateProblem();
+                cmbProblems.setSelectedIndex(currentStudent.getMostRecentProblemIndex());
             }
             else
             {
@@ -217,6 +227,11 @@ public class Tutor
 
         cmbProblems.addActionListener(e ->
         {
+            if (currentStatus == statuses.CLEARING)
+            {
+                return;
+            }
+
             if (currentStatus != statuses.ADD_PROBLEM &&
                 currentStatus != statuses.CHANGING_STUDENT &&
                 cmbProblems.getSelectedIndex() > -1
@@ -385,6 +400,11 @@ public class Tutor
 
         btnGetHelp.addActionListener(e ->
         {
+            if (currentStatus == statuses.RENDER_TUTOR)
+            {
+                return;
+            }
+            updateStatus(statuses.RENDER_TUTOR);
             // pass in the problem type so we can render a new problem of that type and get help.
             if (currentProblem != null)
             {
@@ -519,12 +539,12 @@ public class Tutor
         // Set up students combo box
         cmb.setModel(new DefaultComboBoxModel<>());
         cmb.setBounds(230, 11, 132, 20);
-        cmb.setMaximumRowCount(4);
+        cmb.setMaximumRowCount(10);
 
         // Set up problems combo box
         cmbProblems.setModel(new DefaultComboBoxModel<>());
         cmbProblems.setBounds(450, 11, 150, 20);
-        cmbProblems.setMaximumRowCount(4);
+        cmbProblems.setMaximumRowCount(10);
     }
 
     /**
@@ -567,6 +587,17 @@ public class Tutor
         lblHtmlContent.setVerticalAlignment(SwingConstants.TOP);
         lblHtmlContent.setFont(new Font("Courier New",Font.PLAIN, 11));
         lblHtmlContent.setBounds(offset, 0, 640-(offset*2), 500-(offset*2));
+        try
+        {
+            BufferedImage myPicture = ImageIO.read(Tutor.class.getResource("arithoperators.png"));
+            lblImage = new JLabel(new ImageIcon(myPicture));
+            lblImage.setBounds(0, 180, 620, 100);
+        }
+        catch (Exception ex)
+        {
+            // Do nothing.
+            lblImage = new JLabel();
+        }
     }
 
     /**
@@ -775,6 +806,7 @@ public class Tutor
         lblStudents.setVisible(true);
         lblHeader.setVisible(false);
         updateFrameSize(statuses.ADD_NEW);
+        lblImage.setVisible(true);
     }
 
     /**
@@ -808,6 +840,7 @@ public class Tutor
         lblStudents.setVisible(true);
         lblHeader.setVisible(false);
         updateFrameSize(statuses.ADD_PROBLEM);
+        lblImage.setVisible(true);
     }
 
     /**
@@ -840,6 +873,7 @@ public class Tutor
         lblStudents.setVisible(true);
         lblHeader.setVisible(false);
         updateFrameSize(statuses.DEFAULT);
+        lblImage.setVisible(true);
     }
 
     /**
@@ -873,6 +907,7 @@ public class Tutor
         lblStudents.setVisible(true);
         lblHeader.setVisible(false);
         updateFrameSize(statuses.EDIT);
+        lblImage.setVisible(true);
     }
 
     /**
@@ -915,6 +950,7 @@ public class Tutor
         lblStudents.setVisible(true);
         lblHeader.setVisible(false);
         updateFrameSize(statuses.SHOW_PROBLEMS);
+        lblImage.setVisible(true);
     }
 
     /**
@@ -954,6 +990,7 @@ public class Tutor
         enableSolutionEntry(false);
         lblHeader.setVisible(true);
         updateFrameSize(statuses.TUTOR);
+        lblImage.setVisible(false);
     }
 
     /**
@@ -1234,14 +1271,16 @@ public class Tutor
             case ADD_PROBLEM:
                 renderAddNewProblemLayout();
                 break;
+            case CLEARING:
+            case CHANGING_STUDENT:
+            case RENDER_TUTOR:
+                // don't do anything, just update the status.
+                break;
             case EDIT:
                 renderEditLayout();
                 break;
             case SHOW_PROBLEMS:
                 renderProblemLayout();
-                break;
-            case CHANGING_STUDENT:
-                // don't do anything, just update the status.
                 break;
             case TUTOR:
                 renderShowTutor();
